@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quadrante · P2 NoSQL</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1a1d23;--mu:#6a7280;--bd:#dde1e7;--ac:#2f6fed;--ok:#1f9d55;--okb:#e3f5ea;--er:#d03a3a;--erb:#fbe7e7;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161a;--card:#1d2026;--tx:#e8eaee;--mu:#9099a8;--bd:#2d323b;--ac:#6b9bff;--ok:#4cc27f;--okb:#17301f;--er:#ef6b6b;--erb:#391c1c}}
+:root[data-theme="dark"]{--bg:#14161a;--card:#1d2026;--tx:#e8eaee;--mu:#9099a8;--bd:#2d323b;--ac:#6b9bff;--ok:#4cc27f;--okb:#17301f;--er:#ef6b6b;--erb:#391c1c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+#app{max-width:680px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:8px 0 4px}h2{font-size:18px;margin:0 0 12px;line-height:1.4}
+.mu{color:var(--mu);font-size:14px}.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin:12px 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer}
+.chip.on{background:var(--ac);border-color:var(--ac);color:#fff}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:12px;padding:12px 18px;font-weight:600;width:100%;margin-top:8px}
+.btn.sec{background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+.row{display:flex;gap:8px}.row .btn{flex:1}
+.opt{display:block;width:100%;text-align:left;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin:8px 0}
+.opt:hover:not(:disabled){border-color:var(--ac)}
+.opt.ok{background:var(--okb);border-color:var(--ok)}.opt.er{background:var(--erb);border-color:var(--er)}
+.bar{height:6px;background:var(--bd);border-radius:6px;overflow:hidden;margin:6px 0 14px}.bar i{display:block;height:100%;background:var(--ac)}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:6px;background:var(--bd);color:var(--mu);margin-right:6px}
+textarea{width:100%;min-height:110px;border:1px solid var(--bd);border-radius:12px;padding:10px;background:var(--card);color:var(--tx);font:inherit;resize:vertical}
+.ans{background:var(--okb);border-left:4px solid var(--ok);border-radius:8px;padding:10px 12px;margin:12px 0;white-space:pre-wrap}
+.big{font-size:44px;font-weight:700;margin:0}.err{border-left:4px solid var(--er);padding-left:10px;margin:12px 0}
+.mat h3{font-size:16px;margin:18px 0 6px}.mat ul{padding-left:20px;margin:6px 0}.mat li{margin:5px 0}.sc{overflow-x:auto;margin:8px 0}table{border-collapse:collapse;font-size:14px;min-width:100%}th,td{border:1px solid var(--bd);padding:6px 8px;text-align:left;vertical-align:top}th{background:var(--bg)}pre{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:10px;overflow-x:auto;font-size:13px;margin:8px 0}.box{background:var(--erb);border-left:4px solid var(--er);border-radius:8px;padding:10px 12px;margin:10px 0}.box.tip{background:var(--okb);border-color:var(--ok)}
+:root{--c0:#0E9F63;--c1:#E0364A;--c2:#7B4DE0;--c3:#1E78E0;--bg:#F4F3FB;--card:#fff;--tx:#1B1A3A;--mu:#6B6A8F;--bd:#DAD8EE;--ac:#5B4DE0;--ok:#0E9F63;--okb:#E2F6EC;--er:#E0364A;--erb:#FCE8EA;--fd:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--c0:#3DDC97;--c1:#FF6B78;--c2:#B292FF;--c3:#5FB0FF;--bg:#14132B;--card:#1E1D3F;--tx:#EEECFF;--mu:#9D9BC9;--bd:#35346B;--ac:#9C8BFF;--ok:#3DDC97;--okb:#143A33;--er:#FF6B78;--erb:#40203A}}
+:root[data-theme="dark"]{--c0:#3DDC97;--c1:#FF6B78;--c2:#B292FF;--c3:#5FB0FF;--bg:#14132B;--card:#1E1D3F;--tx:#EEECFF;--mu:#9D9BC9;--bd:#35346B;--ac:#9C8BFF;--ok:#3DDC97;--okb:#143A33;--er:#FF6B78;--erb:#40203A}
+body{font-family:"Instrument Sans",system-ui,-apple-system,sans-serif}
+h1,h2,.wm,.big{font-family:var(--fd)}h1{font-weight:800;letter-spacing:-.02em}
+h1.hero{font-size:34px;line-height:1.05;margin:20px 0 8px}
+.brand{display:flex;align-items:center;gap:10px}.wm{font-weight:800;font-size:18px}
+.logo{display:grid;grid-template-columns:1fr 1fr;gap:2px;width:26px;height:26px}.logo i{display:block;border-radius:2px}
+.logo i:nth-child(1){border-top-left-radius:10px}.logo i:nth-child(2){border-top-right-radius:10px}.logo i:nth-child(3){border-bottom-left-radius:10px}.logo i:nth-child(4){border-bottom-right-radius:10px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:18px 0}
+.tile{position:relative;text-align:left;border:2px solid var(--bd);background:var(--card);color:var(--tx);padding:16px 14px 14px;min-height:160px;display:flex;flex-direction:column;border-radius:8px;opacity:.6;transition:opacity .15s,border-color .15s,background .15s}
+.tile:nth-child(1){border-top-left-radius:36px}.tile:nth-child(2){border-top-right-radius:36px}.tile:nth-child(3){border-bottom-left-radius:36px}.tile:nth-child(4){border-bottom-right-radius:36px}
+.tile.on{opacity:1;border-color:var(--c);background:color-mix(in srgb,var(--c) 13%,var(--card))}
+svg.g{width:34px;height:34px;stroke:var(--c);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-bottom:auto}svg.g .f{fill:var(--c);stroke:none}
+.tile b{font-family:var(--fd);font-size:20px;font-weight:800;margin-top:12px}.tile small{color:var(--mu);font-size:13px;line-height:1.35}
+.ck{position:absolute;top:14px;right:16px;width:20px;height:20px;border-radius:50%;border:2px solid var(--bd)}.tile.on .ck{background:var(--c);border-color:var(--c)}
+.seg{display:flex;border:2px solid var(--bd);border-radius:14px;overflow:hidden;margin:8px 0}.seg button{flex:1;border:0;background:transparent;color:var(--mu);padding:10px 4px;font-weight:600;font-size:14px}.seg button.on{background:var(--tx);color:var(--bg)}
+.sw{border:2px solid var(--bd);background:transparent;color:var(--mu);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600}.sw.on{color:var(--tx);border-color:var(--tx)}
+.btn.go{background:var(--tx);color:var(--bg);font-family:var(--fd);font-size:17px;padding:15px}.btn:disabled{opacity:.4}
+.top{display:flex;align-items:center;gap:10px;margin:4px 0 14px}.x{border:1px solid var(--bd);background:var(--card);color:var(--tx);width:34px;height:34px;border-radius:50%;font-size:15px}
+.seg6{flex:1;display:flex;gap:2px;height:8px}.seg6 i{flex:1;background:var(--c);border-radius:2px}
+.bt{display:flex;align-items:center;gap:10px;margin-bottom:8px}.bt svg.g{width:26px;height:26px;margin:0}.bt b{font-family:var(--fd);color:var(--c);font-size:17px}
+.card.q{border-top:5px solid var(--c);border-radius:6px 6px 20px 20px}
+.opt{display:flex;gap:12px;align-items:flex-start;border-width:2px;border-radius:14px}
+.lt{flex:none;width:26px;height:26px;border-radius:8px;background:var(--bd);display:grid;place-items:center;font-size:13px;font-weight:600}
+.opt.ok .lt{background:var(--ok);color:#fff}.opt.er .lt{background:var(--er);color:#fff}
+.mat{border-top:5px solid var(--c);border-radius:6px 6px 20px 20px}.mh{display:flex;align-items:center;gap:10px;font-size:26px;font-weight:800;margin:0 0 6px}.mh svg.g{width:30px;height:30px;margin:0}
+.mat h3{border-left:4px solid var(--c);padding-left:8px}
+.chip.on{background:var(--tx);border-color:var(--tx);color:var(--bg)}
+.big{font-size:64px;font-weight:800;letter-spacing:-.03em}
+:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+@media(prefers-reduced-motion:no-preference){.tile.in{animation:pop .5s both}@keyframes pop{from{opacity:0;transform:scale(.92)}}}
+:root{--on:#fff}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--on:#14132B}}
+:root[data-theme="dark"]{--on:#14132B}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);flex-wrap:nowrap;overflow-x:auto;margin:0 -16px;padding:8px 16px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tabs .chip{flex:none;white-space:nowrap;font-weight:600}.tabs .chip.on{background:var(--c);border-color:var(--c);color:var(--on)}
+.mhero{display:flex;gap:14px;align-items:center;padding:16px;margin:12px 0;border:2px solid var(--c);border-radius:6px 6px 22px 22px;background:color-mix(in srgb,var(--c) 14%,var(--card))}
+.mhero svg.g{width:46px;height:46px;margin:0;flex:none}.mhero .logo{width:42px;height:42px;flex:none}.mhero .mh{font-size:28px;margin:0}.mhero p{margin:2px 0 0}
+.mat{border-top:1px solid var(--bd);border-radius:18px}
+details.sec{border-top:1px solid var(--bd);padding:2px 0 8px}details.sec:first-child{border-top:0}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-family:var(--fd);font-weight:800;font-size:19px;padding:12px 0}summary::-webkit-details-marker{display:none}summary::after{content:"+";color:var(--c);font-size:24px;line-height:1}details[open]>summary::after{content:"–"}
+.mat ul{list-style:none;padding:0}.mat li{background:color-mix(in srgb,var(--c) 8%,var(--card));border-left:4px solid var(--c);border-radius:4px 12px 12px 4px;padding:10px 12px;margin:8px 0}
+.box li{background:none;border:0;padding:3px 0 3px 14px;margin:2px 0;border-radius:0;position:relative}.box li::before{content:"•";position:absolute;left:2px;color:var(--er)}
+.mat th{background:color-mix(in srgb,var(--c) 16%,var(--card));font-family:var(--fd)}.mat tr:nth-child(even) td{background:color-mix(in srgb,var(--c) 4%,transparent)}.mat td:first-child{font-weight:600}
+.mat code{background:color-mix(in srgb,var(--c) 14%,transparent);padding:1px 6px;border-radius:6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9em}
+pre{background:#13122B;color:#E6E4FF;border:0;border-left:4px solid var(--c);border-radius:4px 12px 12px 4px;font-family:ui-monospace,Menlo,Consolas,monospace;padding:14px;line-height:1.55}.kw{color:color-mix(in srgb,var(--c) 55%,#fff);font-weight:600}.cm{color:#8A88B8;font-style:italic}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;background:var(--c);color:var(--on);font-weight:600;font-size:13px}
+.sc2{display:flex;gap:10px;font-weight:700;font-size:14px}.h-ok{color:var(--ok)}.h-er{color:var(--er)}
+.opt{transition:opacity .15s}.opt.dim{opacity:.5}.opt .mk{margin-left:auto;flex:none;font-size:13px;padding-left:8px}.opt.ok .mk{color:var(--ok)}.opt.er .mk{color:var(--er)}
+.fb{display:flex;gap:12px;align-items:center;padding:14px;margin:14px 0 4px;border-left:5px solid var(--c);border-radius:4px 14px 14px 4px}.fb.ok{--c:var(--ok);background:var(--okb)}.fb.er{--c:var(--er);background:var(--erb)}.fb b{font-family:var(--fd);font-size:18px}.fb .mu{margin-top:2px;color:var(--tx);opacity:.85}
+.fi{flex:none;width:34px;height:34px;border-radius:50%;background:var(--c);color:var(--on);display:grid;place-items:center;font-weight:800}
+.btn.okb{background:var(--ok);color:var(--on)}.btn.erb{background:transparent;color:var(--er);border:2px solid var(--er)}
+.rh{display:flex;gap:16px;align-items:center;padding:16px;margin:12px 0;border:2px solid var(--rc);border-radius:6px 6px 22px 22px;background:color-mix(in srgb,var(--rc) 12%,var(--card))}.rh h2{font-size:24px;margin:0 0 4px}.rh p{margin:0}
+.ring{width:130px;flex:none}.rt{font:800 30px var(--fd);fill:var(--tx)}
+.bk{display:flex;align-items:center;gap:12px;margin:12px 0}.bk svg.g{width:26px;height:26px;margin:0;flex:none}.bk>div{flex:1}.bar2{height:10px;border-radius:5px;background:var(--bd);overflow:hidden;margin-top:4px}.bar2 i{display:block;height:100%;background:var(--c);border-radius:5px}.bs{font-weight:700;font-variant-numeric:tabular-nums}
+.rt2{margin:22px 0 4px}.rv{background:var(--card);border:1px solid var(--bd);border-left:5px solid var(--c);border-radius:4px 14px 14px 4px;padding:12px;margin:10px 0}.rv .bt{margin-bottom:4px}.ln{display:flex;gap:8px;margin:8px 0 0;font-size:14px}.ln i{font-style:normal;font-weight:800}
+</style></head><body><div id="app"></div>
+<script>
+const B=["MongoDB","Redis","NoSQL geral","Cassandra"];
+const MC=[
+[0,"Qual comando insere um documento no MongoDB?",["INSERT INTO","db.collection.insertOne()","db.insert()","insert_doc()"],1],
+[0,"Qual o formato padrão de armazenamento no MongoDB?",["XML","CSV","JSON-like BSON","SQL"],2],
+[0,"Qual comando retorna todos os documentos de uma coleção?",["SELECT * FROM collection","db.collection.find()","db.collection.select()","db.findAll()"],1],
+[0,"O MongoDB suporta quais opções?",["Transações ACID","Sharding","Views","Todas as alternativas acima"],3],
+[0,"Qual NÃO é caso de uso ideal para MongoDB?",["Catálogo de produtos","Sistema de logs","Sistema bancário","Aplicações IoT"],2],
+[1,"Qual comando insere um valor em uma chave no Redis?",["SET key value","INSERT key value","ADD key value","PUT key value"],0],
+[1,"O Redis é amplamente utilizado para:",["Cache","Filas","Pub/Sub","Todas as anteriores"],3],
+[1,"Qual estrutura NÃO é suportada pelo Redis?",["Listas","Árvore binária","Hashes","Conjuntos ordenados"],1],
+[1,"Qual comando recupera o valor de uma chave no Redis?",["GET key","FETCH key","RETRIEVE key","PULL key"],0],
+[1,"O Redis armazena dados principalmente:",["No disco","Na memória RAM","Na memória Flash","Em sistema de arquivos distribuído"],1],
+[2,"Qual NÃO é categoria de NoSQL?",["Grafos","Orientado a documentos","Tabular","Chave-valor"],2],
+[2,"NoSQL é mais adequado para:",["Aplicações com alta escalabilidade","Dados fortemente estruturados","Transações bancárias complexas","Livros contábeis"],0],
+[2,"Característica comum à maioria dos NoSQL:",["Suporte a ACID","Schema-less","Dependência de tabelas relacionais","Baseado em XML"],1],
+[2,"Vantagem dos bancos NoSQL:",["Alta escalabilidade horizontal","Consistência forte por padrão","Estruturas rígidas de tabelas","Uso exclusivo em pequenas aplicações"],0],
+[2,"NoSQL é mais recomendado para:",["Grandes volumes de dados não estruturados","Dados altamente relacionais","Pouca necessidade de escalabilidade","Aplicações monolíticas"],0],
+[3,"Uma das principais características do Cassandra:",["Tabelas relacionais normalizadas","Arquitetura centralizada com servidor principal","Arquitetura distribuída, escalabilidade horizontal e alta disponibilidade","Chaves estrangeiras obrigatórias","Exclusivamente documentos JSON"],2],
+[3,"Qual recurso mantém os dados disponíveis quando um dos 3 nós falha?",["Normalização","Replicação de dados entre os nós","Chaves estrangeiras","Centralização em um servidor","Índices relacionais"],1],
+[3,"Comando correto para criar o keyspace empresa:",["CREATE DATABASE empresa;","CREATE TABLE empresa;","CREATE KEYSPACE empresa;","INSERT KEYSPACE empresa;","USE DATABASE empresa;"],2],
+[3,"Comando CQL para inserir um registro na tabela alunos:",["ADD INTO alunos ...","INSERT INTO alunos (id, nome, curso, idade) VALUES (...)","CREATE INTO alunos ...","UPDATE alunos SET (...) VALUES (...)","APPEND alunos ..."],1],
+[3,"PRIMARY KEY (id_cliente, id_venda): o que é cada campo?",["id_venda é partição, id_cliente é coluna comum","id_cliente é partição e id_venda é clustering","Ambos são colunas comuns","data_venda é a partição obrigatória","Não permite chave composta"],1]
+];
+const D=[
+[0,"Como o MongoDB armazena documentos? Diferença entre coleção e documento.","BSON (JSON binário): pares campo-valor com arrays e subdocumentos. Documento = registro individual. Coleção = conjunto de documentos (≈ tabela), sem exigir a mesma estrutura."],
+[0,"Importância dos índices no MongoDB e impacto no desempenho.","Evitam varrer a coleção inteira: aceleram filtros, ordenações e buscas. Custo: ocupam espaço e deixam escritas um pouco mais lentas. Criar nos campos mais consultados."],
+[0,"Exemplo de aplicação que se beneficia do MongoDB.","Catálogo de e-commerce: atributos diferentes por produto (notebook: processador/memória; camiseta: tamanho/cor). Avaliações embutidas como subdocumentos evitam joins; novos tipos sem alterar esquema."],
+[0,"Desafios de escalar o MongoDB em aplicações distribuídas.","Sharding: escolher a shard key (má escolha = distribuição desigual/hot spots), rebalancear shards, consultas sem shard key varrem todos os shards, atraso de replicação, transações distribuídas caras, operação/monitoramento complexos."],
+[0,"Conceito de agregações no MongoDB e utilidade.","Pipeline de estágios ($match, $group, $sort, $project, $lookup); saída de cada um alimenta o próximo. Filtra, agrupa e calcula somas/médias/contagens no banco. Ex.: total de vendas por categoria."],
+[1,"Como funciona o chave-valor no Redis e principais aplicações.","Dados na RAM como pares chave→valor; chave única; valor pode ser string, lista, hash, set ou sorted set. Acesso direto pela chave, muito rápido. Usos: cache, sessões, contadores, ranking, filas, pub/sub."],
+[1,"Diferença entre persistência RDB e AOF.","RDB: snapshots periódicos; compacto e restauração rápida, mas perde o que veio após o último snapshot. AOF: log de cada escrita, reexecutado na recuperação; mais durável, arquivos maiores e recuperação mais lenta. Podem ser usados juntos."],
+[1,"Benefícios do Redis em aplicação de alta performance.","RAM → latência baixíssima e alto volume de ops/s; estruturas versáteis; reduz carga do banco principal (cache); replicação para disponibilidade."],
+[1,"Como o Redis gerencia a expiração de chaves e vantagens.","EXPIRE chave seg / SETEX chave seg valor definem TTL. Ao expirar, é removida (no acesso ou por varredura periódica). Libera memória sozinho; ideal para cache, sessões e tokens temporários."],
+[1,"Exemplo prático de fila de mensagens com Redis.","Lista: produtor LPUSH fila msg; consumidor BRPOP fila 0 (bloqueante). Ex.: envio de e-mails em segundo plano, processados na ordem de chegada."],
+[2,"Principais diferenças entre relacional e NoSQL.","Relacional: esquema fixo, tabelas, SQL, ACID, joins, escala vertical. NoSQL: esquema flexível, vários modelos (documento, chave-valor, colunas, grafos), escala horizontal, muitas vezes consistência eventual; indicado p/ grandes volumes e dados variados."],
+[2,"Vantagens e desvantagens do NoSQL em aplicações empresariais.","Vantagens: escalabilidade horizontal, flexibilidade de esquema, desempenho, alta disponibilidade. Desvantagens: consistência mais fraca, sem padrão de consulta, pouco suporte a joins/consultas complexas, menos integridade garantida pelo banco."],
+[2,"As 4 categorias de NoSQL e casos de uso.","Documentos (MongoDB): catálogos, CMS. Chave-valor (Redis): cache e sessões. Família de colunas (Cassandra): logs, séries temporais, escrita massiva. Grafos (Neo4j): redes sociais, recomendação, fraude."],
+[2,"Cenários em que NoSQL NÃO é a escolha ideal.","Sistemas financeiros/contábeis com ACID complexo; dados muito relacionados com muitos joins; esquema estável e volume pequeno; relatórios ad hoc complexos (ERP)."],
+[2,"Desafios de integrar NoSQL com sistemas legados.","Modelo e linguagem diferentes (SQL × APIs próprias); sem integridade referencial e ACID completo; migração/transformação de dados; sincronização entre bases; consistência eventual; incompatibilidade com ferramentas; capacitação da equipe."],
+[3,"Q6 – Família de colunas × relacional (organização, flexibilidade, escalabilidade, exemplos).","Dados em tabelas com linhas identificadas por chave, agrupadas em partições distribuídas entre nós. Desnormalizado e modelado por consulta (relacional: normalizado, FK e joins). Linhas podem ter colunas diferentes (relacional: esquema rígido). Escala horizontal adicionando nós (relacional: vertical). Exemplos: Cassandra e HBase em IoT, logs, séries temporais, mensagens, histórico de transações."],
+[3,"Q7 – Arquitetura distribuída e replicação do Cassandra (cluster de 5 nós). E se um nó cair?","Sem nó mestre: todos os nós têm o mesmo papel e formam um anel. Hash da chave de partição distribui os dados; fator de replicação define nº de cópias (ex.: 3). Se um nó cai, as outras réplicas atendem leituras e escritas; escritas do nó falho ficam como hints e ele é sincronizado ao voltar."],
+[3,"Q8 – Modelar: alunos por curso; disciplinas de um aluno; notas de um aluno em um semestre.","1) alunos_por_curso (curso, id_aluno, nome) PK (curso, id_aluno)\n2) disciplinas_por_aluno (id_aluno, semestre, id_disciplina, nome_disciplina) PK (id_aluno, semestre, id_disciplina)\n3) notas_por_aluno_semestre (id_aluno, semestre, id_disciplina, nota) PK ((id_aluno, semestre), id_disciplina)\nJustificativa: sem joins e só consulta eficiente pela partição → uma tabela por consulta, com duplicação (desnormalização). Partição distribui entre nós; clustering ordena dentro da partição."],
+[3,"Q9 – Escreva os 7 comandos CQL: keyspace loja, USE, tabela produtos, 2 INSERTs, SELECT, UPDATE, DELETE.","CREATE KEYSPACE loja WITH replication = {'class':'SimpleStrategy','replication_factor':1};\nUSE loja;\nCREATE TABLE produtos (id_produto INT PRIMARY KEY, nome TEXT, categoria TEXT, preco DECIMAL);\nINSERT INTO produtos (id_produto, nome, categoria, preco) VALUES (1,'Mouse','Informática',49.90);\nINSERT INTO produtos (id_produto, nome, categoria, preco) VALUES (2,'Teclado','Informática',89.90);\nSELECT * FROM produtos;\nUPDATE produtos SET preco = 59.90 WHERE id_produto = 1;\nDELETE FROM produtos WHERE id_produto = 2;"],
+[3,"Q10 – Consistência configurável no Cassandra (cite 2+ níveis).","Define, por operação, quantas réplicas precisam responder. ONE: uma (mais rápido/disponível, menos consistente). QUORUM: maioria (equilíbrio). ALL: todas (mais consistente, mais lento, falha se um nó cair). Consistência forte: R + W > fator de replicação."]
+];
+const $=s=>document.querySelector(s),app=$("#app");
+const cfg={b:new Set([0,1,2,3]),t:"all",sh:true};
+let Q=[],i=0,hits=0,miss=[],done=false;
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function home(){
+ const n=pool().length;
+ app.innerHTML=`<h1>Quiz P2 · Bancos NoSQL</h1><div class="mu">Simulado do Prof. Vagner Macedo · MongoDB, Redis, NoSQL geral e Cassandra</div>
+ <div class="card"><b>Blocos</b><div class="chips">${B.map((x,k)=>`<button class="chip ${cfg.b.has(k)?"on":""}" onclick="tb(${k})">${x}</button>`).join("")}</div>
+ <b>Tipo</b><div class="chips">${[["all","Tudo"],["mc","Múltipla escolha"],["d","Dissertativas"]].map(([v,l])=>`<button class="chip ${cfg.t==v?"on":""}" onclick="tt('${v}')">${l}</button>`).join("")}</div>
+ <b>Ordem</b><div class="chips"><button class="chip ${cfg.sh?"on":""}" onclick="cfg.sh=!cfg.sh;home()">Embaralhar</button></div>
+ <div class="mu">${n} questões selecionadas</div></div>
+ <button class="btn" ${n?"":"disabled"} onclick="start(pool())">Começar quiz</button><button class="btn sec" onclick="mat(0)">📖 Material de estudo</button>`;
+}
+function tb(k){cfg.b.has(k)?cfg.b.delete(k):cfg.b.add(k);home()}
+function tt(v){cfg.t=v;home()}
+function pool(){
+ let p=[];
+ if(cfg.t!="d")MC.forEach(q=>cfg.b.has(q[0])&&p.push({k:"mc",b:q[0],q:q[1],o:q[2],c:q[3]}));
+ if(cfg.t!="mc")D.forEach(q=>cfg.b.has(q[0])&&p.push({k:"d",b:q[0],q:q[1],a:q[2]}));
+ return p;
+}
+function start(p){
+ Q=p.slice();if(cfg.sh)Q.sort(()=>Math.random()-.5);
+ i=0;hits=0;miss=[];show();
+}
+function head(){
+ return `<div class="mu">Questão ${i+1} de ${Q.length} · ${hits} acertos</div><div class="bar"><i style="width:${i/Q.length*100}%"></i></div>
+ <span class="tag">${B[Q[i].b]}</span><span class="tag">${Q[i].k=="mc"?"Múltipla escolha":"Dissertativa"}</span>`;
+}
+function show(){
+ if(i>=Q.length)return end();
+ const q=Q[i];
+ if(q.k=="mc"){
+  app.innerHTML=`${head()}<div class="card"><h2>${esc(q.q)}</h2>${q.o.map((o,k)=>`<button class="opt" onclick="pick(${k})">${"abcde"[k]}) ${esc(o)}</button>`).join("")}</div><div id="nx"></div>`;
+ }else{
+  app.innerHTML=`${head()}<div class="card"><h2>${esc(q.q)}</h2><textarea id="ta" placeholder="Escreva sua resposta (ou responda de cabeça)..."></textarea>
+  <button class="btn" id="rv" onclick="rev()">Ver resposta</button><div id="ra"></div></div>`;
+ }
+}
+function pick(k){
+ const q=Q[i],bs=document.querySelectorAll(".opt");
+ bs.forEach((b,j)=>{b.disabled=true;if(j==q.c)b.classList.add("ok");else if(j==k)b.classList.add("er")});
+ if(k==q.c)hits++;else miss.push(q);
+ $("#nx").innerHTML=`<button class="btn" onclick="nxt()">${i+1<Q.length?"Próxima":"Ver resultado"}</button>`;
+}
+function rev(){
+ $("#rv").remove();$("#ta").readOnly=true;
+ $("#ra").innerHTML=`<div class="ans">${esc(Q[i].a)}</div><div class="mu">Como foi sua resposta?</div><div class="row"><button class="btn sec" onclick="gr(0)">Preciso revisar</button><button class="btn" onclick="gr(1)">Acertei</button></div>`;
+}
+function gr(ok){if(ok)hits++;else miss.push(Q[i]);nxt()}
+function nxt(){i++;show();window.scrollTo(0,0)}
+function end(){
+ const pc=Math.round(hits/Q.length*100);
+ app.innerHTML=`<h1>Resultado</h1><div class="card"><p class="big">${pc}%</p><div class="mu">${hits} de ${Q.length} questões</div></div>
+ ${miss.length?`<h2>Para revisar (${miss.length})</h2>`+miss.map(q=>`<div class="err"><span class="tag">${B[q.b]}</span><div><b>${esc(q.q)}</b></div><div class="mu" style="white-space:pre-wrap">${esc(q.k=="mc"?"Certa: "+q.o[q.c]:q.a)}</div></div>`).join(""):"<div class='card'>Gabaritou! 🎉</div>"}
+ ${miss.length?`<button class="btn" onclick="start(miss.slice())">Refazer só os erros</button>`:""}
+ <button class="btn sec" onclick="mat(0)">📖 Revisar material</button><button class="btn sec" onclick="home()">Início</button>`;
+ window.scrollTo(0,0);
+}
+const T=(h,r)=>`<div class="sc"><table><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>${r.map(w=>`<tr>${w.map(x=>`<td>${x}</td>`).join("")}</tr>`).join("")}</table></div>`;
+const P=t=>`<pre>${t}</pre>`,X=t=>`<div class="box">${t}</div>`,Z=t=>`<div class="box tip">${t}</div>`;
+const S=[
+["Comparativo",-1,Z("<b>Estratégia:</b> domine o comparativo e o guia de decisão (quase toda dissertação pede “quando usar e por quê”); saiba escrever de cabeça os comandos Redis e CQL; saiba modelar no Cassandra (uma tabela por consulta).")+T(["","MongoDB","Redis","Cassandra","Neo4j"],[
+["<b>Modelo</b>","Documentos (BSON/JSON)","Chave-valor","Família de colunas","Grafos (nós e arestas)"],
+["<b>Onde guarda</b>","Disco (com índices)","RAM (persistência opcional)","Disco, distribuído em anel","Disco"],
+["<b>Ponto forte</b>","Esquema flexível, dados aninhados, consultas ricas","Latência mínima, estruturas versáteis, TTL","Escrita massiva, sem ponto único de falha, escala linear","Relacionamentos profundos"],
+["<b>Ponto fraco</b>","Escala exige sharding bem planejado","Limitado pela RAM; consulta só por chave","Sem joins; modelagem rígida por consulta","Escala horizontal mais difícil"],
+["<b>Usar para</b>","Catálogos, CMS, perfis, IoT, logs","Cache, sessões, filas, ranking, contadores","Séries temporais, logs, IoT, mensagens, histórico","Redes sociais, recomendação, fraude"],
+["<b>Não usar para</b>","Dados muito relacionais, relatórios com muitos joins","Dados que não cabem em RAM; consultas complexas","Volume pequeno, consultas ad hoc","Dados simples sem relacionamentos"]])],
+["MongoDB",0,`<h3>Conceitos</h3><ul>
+<li><b>Documento</b>: registro em <b>BSON</b> (JSON binário), com campo-valor, arrays e subdocumentos. <b>Coleção</b>: conjunto de documentos (≈ tabela, mas sem exigir a mesma estrutura).</li>
+<li><b>Índices</b>: evitam varrer a coleção (filtros, ordenação, busca). Custo: espaço e escrita um pouco mais lenta. Criar nos campos mais consultados.</li>
+<li><b>Agregação</b>: pipeline de estágios ($match, $group, $sort, $project, $lookup); saída de um alimenta o próximo. Ex.: total de vendas por categoria.</li>
+<li><b>Escalar = sharding.</b> Desafios: shard key mal escolhida (distribuição desigual/hot spots), rebalancear shards, consulta sem shard key varre todos os shards, atraso de replicação, transações distribuídas caras, operação e monitoramento complexos.</li>
+<li>Suporta <b>transações ACID, sharding e views</b> (“todas as anteriores”).</li></ul>
+<h3>Comandos</h3>${P(`db.produtos.insertOne({ nome: "Notebook", preco: 4500 })
+db.produtos.find()   // todos
+db.produtos.aggregate([
+  { $group: { _id: "$categoria", total: { $sum: "$preco" } } }
+])`)}
+<h3>Quando usar</h3>${T(["Exemplo","Por quê"],[["<b>Catálogo e-commerce</b>","Atributos diferentes por produto; esquema flexível; avaliações como subdocumentos evitam joins."],["<b>CMS / blogs</b>","Artigo + comentários + tags em um único documento; leitura em uma consulta."],["<b>Logs</b>","Campos variáveis e muitas escritas."],["<b>IoT</b>","Sensores com payloads diferentes; ingestão rápida."]])}
+${X("<b>Quando NÃO usar:</b> sistema bancário / transações financeiras complexas e dados muito relacionados → relacional.")}`],
+["Redis",1,`<h3>Conceitos</h3><ul>
+<li>Dados na <b>RAM</b> como chave → valor. Chave única; valor: <b>string, lista, hash, set, sorted set</b>. Árvore binária <b>não</b> existe.</li>
+<li><b>Benefícios</b>: latência baixíssima, muitas ops/s, estruturas versáteis, alivia o banco principal (cache), replicação.</li>
+<li><b>TTL</b>: <code>EXPIRE chave seg</code> ou <code>SETEX chave seg valor</code>. Removida ao expirar (no acesso ou por varredura). Libera memória sozinho: caches, sessões, tokens.</li>
+<li><b>Fila</b>: produtor <code>LPUSH fila msg</code>, consumidor <code>BRPOP fila 0</code> (bloqueante). Ex.: e-mails em segundo plano, na ordem de chegada.</li></ul>
+<h3>Persistência</h3>${T(["","RDB (snapshot)","AOF (log de escritas)"],[["<b>Como</b>","“Fotos” periódicas em um arquivo","Registra cada escrita e reexecuta na recuperação"],["<b>Vantagem</b>","Compacto, restauração rápida","Mais durável"],["<b>Desvantagem</b>","Perde o que veio após o último snapshot","Arquivos maiores, recuperação lenta"]])}
+<h3>Comandos</h3>${P(`SET usuario:1 "Ana"
+GET usuario:1
+SETEX sessao:abc 1800 "dados"   // TTL 30 min
+EXPIRE usuario:1 60
+LPUSH fila "email1"  |  BRPOP fila 0`)}
+<h3>Quando usar</h3>${T(["Exemplo","Recurso"],[["Cache de consultas/páginas","String/hash + TTL"],["Sessão de login","SETEX"],["Ranking / leaderboard","Sorted set"],["Contador de acessos/curtidas","INCR (atômico)"],["Fila de tarefas","LPUSH + BRPOP"],["Notificações em tempo real","Pub/Sub"]])}
+${X("<b>Quando NÃO usar:</b> dados grandes demais para a RAM, histórico de longo prazo como base principal, consultas complexas (acesso é pela chave, sem joins).")}`],
+["Cassandra",3,`<h3>Conceitos</h3><ul>
+<li><b>Sem nó mestre</b>: todos os nós iguais, em <b>anel</b> → escala horizontal, alta disponibilidade, sem ponto único de falha.</li>
+<li>Distribuição pelo <b>hash da chave de partição</b>; <b>fator de replicação</b> = nº de cópias (ex.: 3).</li>
+<li><b>Nó cai</b>: réplicas atendem leitura e escrita; escritas do nó falho ficam como <b>hints</b> e ele sincroniza ao voltar.</li>
+<li><b>Chave primária = partição + clustering</b>. PRIMARY KEY (id_cliente, id_venda): id_cliente distribui entre nós; id_venda ordena dentro da partição. Partição composta: PRIMARY KEY ((id_aluno, semestre), id_disciplina).</li>
+<li><b>Família de colunas × relacional</b>: desnormalizado e modelado por consulta (sem FK/joins); linhas com colunas diferentes; escala adicionando nós. Ex.: Cassandra, HBase.</li></ul>
+<h3>Consistência configurável (por operação)</h3>${T(["Nível","Réplicas","Efeito"],[["<b>ONE</b>","Uma","Mais rápido e disponível, menos consistente"],["<b>QUORUM</b>","Maioria","Equilíbrio"],["<b>ALL</b>","Todas","Mais consistente, mais lento, falha se um nó cair"]])}<p>Consistência forte: <b>R + W &gt; fator de replicação</b>.</p>
+<h3>Modelagem: uma tabela por consulta</h3>${P(`alunos_por_curso (curso, id_aluno, nome)
+  PRIMARY KEY (curso, id_aluno)
+disciplinas_por_aluno (id_aluno, semestre, id_disciplina, nome_disciplina)
+  PRIMARY KEY (id_aluno, semestre, id_disciplina)
+notas_por_aluno_semestre (id_aluno, semestre, id_disciplina, nota)
+  PRIMARY KEY ((id_aluno, semestre), id_disciplina)`)}<p>Justificativa: sem joins, só consulta eficiente pela partição → uma tabela por consulta, aceitando duplicar dados.</p>
+<h3>CQL completo (Q9)</h3>${P(`CREATE KEYSPACE loja WITH replication =
+  {'class':'SimpleStrategy','replication_factor':1};
+USE loja;
+CREATE TABLE produtos (id_produto INT PRIMARY KEY,
+  nome TEXT, categoria TEXT, preco DECIMAL);
+INSERT INTO produtos (id_produto, nome, categoria, preco)
+  VALUES (1,'Mouse','Informática',49.90);
+SELECT * FROM produtos;
+UPDATE produtos SET preco = 59.90 WHERE id_produto = 1;
+DELETE FROM produtos WHERE id_produto = 2;`)}
+<h3>Quando usar</h3><ul><li>Pedidos de e-commerce em cluster (replicação mantém disponível)</li><li>Séries temporais/IoT (partição = dispositivo; clustering = tempo)</li><li>Logs e histórico (append-only, escala linear)</li><li>Mensagens/feeds (alta disponibilidade, consistência ajustável)</li><li>Dados acadêmicos com consultas fixas (cada consulta vira uma tabela)</li></ul>
+${X("<b>Quando NÃO usar:</b> consultas ad hoc/relatórios variados, dados muito relacionados que dependem de joins, volume pequeno com esquema estável.")}`],
+["NoSQL geral",2,`<h3>Relacional × NoSQL</h3>${T(["","Relacional","NoSQL"],[["<b>Esquema</b>","Fixo","Flexível (schema-less)"],["<b>Modelo</b>","Tabelas","Documento, chave-valor, colunas, grafos"],["<b>Consulta</b>","SQL padrão, joins","APIs próprias, joins limitados"],["<b>Transações</b>","ACID","Muitas vezes consistência eventual"],["<b>Escala</b>","Vertical","Horizontal"],["<b>Indicado</b>","Dados estruturados e relacionados","Grandes volumes, dados variados"]])}
+<h3>Vantagens e desvantagens</h3><ul><li><b>Vantagens</b>: escalabilidade horizontal, flexibilidade de esquema, desempenho, alta disponibilidade.</li><li><b>Desvantagens</b>: consistência mais fraca, sem padrão de consulta, pouco suporte a joins/consultas complexas, menos integridade garantida.</li></ul>
+<h3>4 categorias</h3>${T(["Categoria","Exemplo","Casos de uso"],[["Documentos","MongoDB","Catálogos, CMS"],["Chave-valor","Redis","Cache e sessões"],["Família de colunas","Cassandra","Logs, séries temporais, escrita massiva"],["Grafos","Neo4j","Redes sociais, recomendação, fraude"]])}${X("<b>“Tabular” NÃO é categoria</b> de NoSQL.")}
+<h3>Quando NoSQL não é a melhor escolha</h3><ul><li>Financeiro/contábil com ACID complexo</li><li>Dados muito relacionados (muitos joins)</li><li>Esquema estável e volume pequeno</li><li>Relatórios ad hoc complexos (ERP)</li></ul>
+<h3>Desafios de integrar com legado</h3><ul><li>Modelo e linguagem diferentes (SQL × APIs próprias)</li><li>Sem integridade referencial e ACID completo</li><li>Migração e transformação de dados</li><li>Sincronização entre bases e consistência eventual</li><li>Incompatibilidade com ferramentas existentes</li><li>Capacitação da equipe</li></ul>`],
+["Qual banco?",-1,T(["Cenário","Banco","Justificativa"],[["Catálogo com atributos variados","MongoDB","Esquema flexível e subdocumentos, sem joins"],["Cache e sessão de usuário","Redis","RAM, acesso por chave, TTL automático"],["Ranking em tempo real","Redis","Sorted set mantém a ordem"],["Fila de e-mails","Redis","Lista com LPUSH/BRPOP"],["Milhões de leituras de sensores IoT/s","Cassandra","Escrita massiva e escala horizontal sem mestre"],["Pedidos que não podem ficar indisponíveis","Cassandra","Replicação, sem ponto único de falha"],["“Amigos de amigos”, recomendações","Neo4j","Percorrer relacionamentos"],["Detecção de fraude em rede de contas","Neo4j","Padrões em conexões"],["Banco, contabilidade, ERP","Relacional","ACID, integridade referencial, joins, relatórios ad hoc"]])],
+["Pegadinhas",-1,X("<ul><li>Cassandra <b>não</b> é centralizado, <b>não</b> usa chave estrangeira e <b>não</b> é só JSON (isso é MongoDB).</li><li>Redis: não existe INSERT/ADD/PUT. Gravar = <b>SET</b>; ler = <b>GET</b>.</li><li>CQL: não existe CREATE DATABASE → <b>CREATE KEYSPACE</b>; entrar com <b>USE</b>.</li><li>MongoDB suporta ACID, mas <b>sistema bancário</b> continua sendo o “não ideal”: transações complexas e dados muito relacionados.</li></ul>")+"<h3>Gabarito rápido</h3>"+T(["Tema","Respostas"],[["MongoDB","insertOne() · BSON · find() · ACID+sharding+views: todas · não ideal: banco"],["Redis","SET · GET · usos: todas · não suporta: árvore binária · RAM"],["NoSQL geral","Não é categoria: tabular · alta escalabilidade · schema-less · escala horizontal · grandes volumes não estruturados"],["Cassandra","Distribuído, horizontal, alta disponibilidade · replicação · CREATE KEYSPACE · INSERT INTO · partição id_cliente, clustering id_venda"]])]
+];
+function mat(k){
+ app.innerHTML=`<button class="chip" onclick="home()">← Início</button><h1>Material de estudo</h1><div class="chips">${S.map((s,j)=>`<button class="chip ${j==k?"on":""}" onclick="mat(${j})">${s[0]}</button>`).join("")}</div><div class="card mat">${S[k][2]}${S[k][1]>=0?`<button class="btn" onclick="prac(${S[k][1]})">Praticar quiz de ${S[k][0]}</button>`:`<button class="btn" onclick="cfg.b=new Set([0,1,2,3]);cfg.t='all';start(pool())">Praticar quiz (tudo)</button>`}</div>`;
+ window.scrollTo(0,0);
+}
+function prac(b){cfg.b=new Set([b]);cfg.t="all";start(pool())}
+const SUB=['Documentos','Chave-valor','Visão geral','Família de colunas'];
+const G=k=>`<svg class="g" viewBox="0 0 32 32">${['<path d="M11 5C8 5 7 6.5 7 9v3c0 2-1 4-3 4 2 0 3 2 3 4v3c0 2.5 1 4 4 4M21 5c3 0 4 1.5 4 4v3c0 2 1 4 3 4-2 0-3 2-3 4v3c0 2.5-1 4-4 4"/>','<path d="M18 3L7 18h8l-2 11 12-16h-8z"/>','<path d="M14.5 9.5L8.5 21.5M17.5 9.5l6 12M10 24h12"/><circle cx="16" cy="7" r="3"/><circle cx="7" cy="24" r="3"/><circle cx="25" cy="24" r="3"/>','<circle cx="16" cy="16" r="10"/><circle class="f" cx="16" cy="6" r="2.6"/><circle class="f" cx="25.5" cy="13" r="2.6"/><circle class="f" cx="22" cy="24.5" r="2.6"/><circle class="f" cx="10" cy="24.5" r="2.6"/><circle class="f" cx="6.5" cy="13" r="2.6"/>'][k]}</svg>`;
+function home(){
+ const n=pool().length,cnt=k=>MC.filter(q=>q[0]==k).length+D.filter(q=>q[0]==k).length,an=!window._s;window._s=1;
+ app.innerHTML=`<div class="brand"><span class="logo">${[0,1,2,3].map(k=>`<i style="background:var(--c${k})"></i>`).join("")}</span><span class="wm">Quadrante</span></div>
+ <h1 class="hero">Prepare a P2 de Bancos NoSQL</h1><p class="mu">Toque nos quadrantes que quer treinar. Baseado no simulado do Prof. Vagner Macedo.</p>
+ <div class="tiles">${B.map((x,k)=>`<button class="tile ${cfg.b.has(k)?"on":""} ${an?"in":""}" style="--c:var(--c${k});animation-delay:${k*70}ms" onclick="tb(${k})">${G(k)}<span class="ck"></span><b>${x}</b><small>${SUB[k]} · ${cnt(k)} questões</small></button>`).join("")}</div>
+ <div class="seg">${[["all","Tudo"],["mc","Múltipla escolha"],["d","Dissertativas"]].map(([v,l])=>`<button class="${cfg.t==v?"on":""}" onclick="tt('${v}')">${l}</button>`).join("")}</div>
+ <button class="sw ${cfg.sh?"on":""}" onclick="cfg.sh=!cfg.sh;home()">⇄ Embaralhar</button>
+ <button class="btn go" ${n?"":"disabled"} onclick="start(pool())">Começar · ${n} questões</button>
+ <button class="btn sec" onclick="mat(0)">Material de estudo</button>`;
+}
+function head(){
+ const q=Q[i];
+ return `<div class="top"><button class="x" onclick="home()" aria-label="Sair">✕</button><div class="seg6">${Q.map((z,k)=>`<i style="--c:var(--c${z.b});opacity:${k<i?1:k==i?.9:.2}"></i>`).join("")}</div><span class="mu">${i+1}/${Q.length}</span></div><div class="bt" style="--c:var(--c${q.b})">${G(q.b)}<b>${B[q.b]}</b><span class="mu">${q.k=="mc"?"Múltipla escolha":"Dissertativa"}</span></div>`;
+}
+function show(){
+ if(i>=Q.length)return end();
+ const q=Q[i],st=`style="--c:var(--c${q.b})"`;
+ if(q.k=="mc"){
+  app.innerHTML=`${head()}<div class="card q" ${st}><h2>${esc(q.q)}</h2>${q.o.map((o,k)=>`<button class="opt" onclick="pick(${k})"><b class="lt">${"abcde"[k]}</b><span>${esc(o)}</span></button>`).join("")}</div><div id="nx"></div>`;
+ }else{
+  app.innerHTML=`${head()}<div class="card q" ${st}><h2>${esc(q.q)}</h2><textarea id="ta" placeholder="Escreva sua resposta (ou responda de cabeça)..."></textarea><button class="btn go" id="rv" onclick="rev()">Ver resposta</button><div id="ra"></div></div>`;
+ }
+}
+function mat(k){
+ const b=S[k][1],c=b>=0?`var(--c${b})`:"var(--ac)";
+ app.innerHTML=`<div class="top"><button class="x" onclick="home()" aria-label="Início">←</button><span class="wm">Material de estudo</span></div><div class="chips">${S.map((s,j)=>`<button class="chip ${j==k?"on":""}" onclick="mat(${j})">${s[0]}</button>`).join("")}</div><div class="card mat" style="--c:${c}"><h2 class="mh">${b>=0?G(b):""}${S[k][0]}</h2>${S[k][2]}<button class="btn go" onclick="${b>=0?`prac(${b})`:"cfg.b=new Set([0,1,2,3]);cfg.t='all';start(pool())"}">Praticar quiz${b>=0?" de "+S[k][0]:" (tudo)"}</button></div>`;
+ window.scrollTo(0,0);
+}
+const TL=['Os 4 bancos lado a lado','Documentos flexíveis em BSON','Chave-valor na RAM, latência mínima','Anel sem mestre, escrita massiva','Visão geral e as 4 categorias','Cenário → banco certo','O que mais derruba na prova'],DBC={MongoDB:0,Redis:1,Cassandra:3,Neo4j:2};
+function mat(k){
+ const b=S[k][1],c=b>=0?`var(--c${b})`:"var(--ac)",lg='<span class="logo">'+[0,1,2,3].map(j=>`<i style="background:var(--c${j})"></i>`).join("")+'</span>';
+ const pt=S[k][2].split("<h3>"),body=pt[0]+pt.slice(1).map(p=>{const e=p.indexOf("</h3>");return `<details class="sec" open><summary>${p.slice(0,e)}</summary>${p.slice(e+5)}</details>`}).join("");
+ app.innerHTML=`<div class="top"><button class="x" onclick="home()" aria-label="Início">←</button><span class="wm">Material de estudo</span></div>
+ <div class="chips tabs">${S.map((s,j)=>`<button class="chip ${j==k?"on":""}" style="--c:${s[1]>=0?`var(--c${s[1]})`:"var(--ac)"}" onclick="mat(${j})">${s[0]}</button>`).join("")}</div>
+ <div class="mhero" style="--c:${c}">${b>=0?G(b):lg}<div><h2 class="mh">${S[k][0]}</h2><p class="mu">${TL[k]}</p></div></div>
+ <div class="card mat" style="--c:${c}">${body}</div>
+ <button class="btn go" onclick="${b>=0?`prac(${b})`:"cfg.b=new Set([0,1,2,3]);cfg.t='all';start(pool())"}">Praticar quiz${b>=0?" de "+S[k][0]:" (tudo)"}</button>${k<S.length-1?`<button class="btn sec" onclick="mat(${k+1})">Próximo: ${S[k+1][0]} →</button>`:""}`;
+ document.querySelectorAll(".mat pre").forEach(p=>{p.innerHTML=esc(p.textContent).replace(/\b(CREATE KEYSPACE|CREATE TABLE|INSERT INTO|PRIMARY KEY|DELETE FROM|SELECT|UPDATE|WHERE|VALUES|USE|SETEX|EXPIRE|LPUSH|BRPOP|SET|GET|FROM|WITH|insertOne|find|aggregate)\b/g,m=>`<span class="kw">${m}</span>`).replace(/\/\/.*/g,m=>`<span class="cm">${m}</span>`)});
+ if(k==0)document.querySelectorAll(".mat th").forEach((t,j)=>{if(j)t.style.borderTop=`4px solid var(--c${[0,1,3,2][j-1]})`});
+ if(k==5)document.querySelectorAll(".mat tr td:nth-child(2)").forEach(t=>{const j=DBC[t.textContent];t.innerHTML=`<span class="pill" style="--c:${j==null?"var(--mu)":`var(--c${j})`}">${t.textContent}</span>`});
+ document.querySelector(".tabs .on").scrollIntoView({inline:"center",block:"nearest"});
+ window.scrollTo(0,0);
+}
+let R=[];
+function start(p){Q=p.slice();Q.forEach(q=>{delete q.r;delete q.s});if(cfg.sh)Q.sort(()=>Math.random()-.5);i=0;hits=0;miss=[];R=[];show()}
+function head(){
+ const q=Q[i];
+ return `<div class="top"><button class="x" onclick="home()" aria-label="Sair">✕</button><div class="seg6">${Q.map((z,k)=>`<i style="background:${R[k]==1?"var(--ok)":R[k]==0?"var(--er)":`var(--c${z.b})`};opacity:${k<=i||R[k]!=null?1:.2}"></i>`).join("")}</div><span class="sc2"><b class="h-ok">✓ ${hits}</b><b class="h-er">✕ ${miss.length}</b></span></div><div class="bt" style="--c:var(--c${q.b})">${G(q.b)}<b>${B[q.b]}</b><span class="mu">${q.k=="mc"?"Múltipla escolha":"Dissertativa"} · ${i+1} de ${Q.length}</span></div>`;
+}
+function pick(k){
+ const q=Q[i],ok=k==q.c;q.s=k;q.r=ok?1:0;R[i]=q.r;
+ document.querySelectorAll(".opt").forEach((b,j)=>{b.disabled=true;if(j==q.c){b.classList.add("ok");b.insertAdjacentHTML("beforeend",`<b class="mk">✓ ${ok?"":"certa"}</b>`)}else if(j==k){b.classList.add("er");b.insertAdjacentHTML("beforeend",'<b class="mk">✕ sua resposta</b>')}else b.classList.add("dim")});
+ ok?hits++:miss.push(q);
+ const sg=document.querySelectorAll(".seg6 i")[i];sg.style.background=ok?"var(--ok)":"var(--er)";
+ document.querySelector(".sc2").innerHTML=`<b class="h-ok">✓ ${hits}</b><b class="h-er">✕ ${miss.length}</b>`;
+ $("#nx").innerHTML=`<div class="fb ${ok?"ok":"er"}"><span class="fi">${ok?"✓":"✕"}</span><div><b>${ok?"Acertou!":"Errou"}</b><div class="mu">${ok?"":"Certa: "}${"abcde"[q.c]}) ${esc(q.o[q.c])}</div></div></div><button class="btn go" onclick="nxt()">${i+1<Q.length?"Próxima":"Ver resultado"}</button>`;
+ $("#nx").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function rev(){
+ $("#rv").remove();$("#ta").readOnly=true;
+ $("#ra").innerHTML=`<div class="ans"><b>Resposta-modelo</b>\n${esc(Q[i].a)}</div><div class="mu">Compare com a sua. Como foi?</div><div class="row"><button class="btn erb" onclick="gr(0)">Preciso revisar</button><button class="btn okb" onclick="gr(1)">Acertei</button></div>`;
+ $("#ra").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function gr(ok){const q=Q[i];q.r=ok;R[i]=ok;if(ok)hits++;else miss.push(q);nxt()}
+function end(){
+ const tot=Q.length,pc=Math.round(hits/tot*100),rc=pc>=70?"var(--ok)":pc>=40?"var(--ac)":"var(--er)",
+ tt2=pc>=85?"Pronto para a prova":pc>=60?"Falta pouco":"Vale revisar o material",MI=[1,2,4,3],
+ bl=[...new Set(Q.map(q=>q.b))].map(b=>{const l=Q.filter(q=>q.b==b);return{b,n:l.length,h:l.filter(q=>q.r==1).length}}),
+ pior=bl.filter(x=>x.h<x.n).sort((a,c)=>a.h/a.n-c.h/c.n)[0];
+ app.innerHTML=`<div class="top"><button class="x" onclick="home()" aria-label="Início">←</button><span class="wm">Resultado</span></div>
+ <div class="rh" style="--rc:${rc}"><svg class="ring" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--bd)" stroke-width="12"/><circle cx="60" cy="60" r="52" fill="none" stroke="var(--rc)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${pc*3.267} 327" transform="rotate(-90 60 60)"/><text x="60" y="69" text-anchor="middle" class="rt">${pc}%</text></svg><div><h2>${tt2}</h2><p class="mu">${hits} de ${tot} certas · ${miss.length} para revisar</p></div></div>
+ <div class="card"><b>Por quadrante</b>${bl.map(x=>`<div class="bk" style="--c:var(--c${x.b})">${G(x.b)}<div><b>${B[x.b]}</b><div class="bar2"><i style="width:${x.h/x.n*100}%"></i></div></div><span class="bs">${x.h}/${x.n}</span></div>`).join("")}</div>
+ ${miss.length?`<h2 class="rt2">Para revisar</h2>`+miss.map(q=>`<div class="rv" style="--c:var(--c${q.b})"><div class="bt">${G(q.b)}<b>${B[q.b]}</b></div><b>${esc(q.q)}</b>${q.k=="mc"?`<div class="ln h-er"><i>✕</i><span>Sua resposta: ${"abcde"[q.s]}) ${esc(q.o[q.s])}</span></div><div class="ln h-ok"><i>✓</i><span>Certa: ${"abcde"[q.c]}) ${esc(q.o[q.c])}</span></div>`:`<div class="ans">${esc(q.a)}</div>`}</div>`).join(""):`<div class="fb ok"><span class="fi">✓</span><div><b>Gabaritou!</b></div></div>`}
+ ${miss.length?`<button class="btn go" onclick="start(miss.slice())">Refazer só os erros (${miss.length})</button>`:""}
+ ${pior?`<button class="btn sec" onclick="mat(${MI[pior.b]})">Revisar material de ${B[pior.b]}</button>`:""}
+ <button class="btn sec" onclick="home()">Início</button>`;
+ window.scrollTo(0,0);
+}
+home();
+</script></body></html>
